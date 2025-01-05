@@ -13,11 +13,11 @@
 ^README\.Rmd$
 ^_output\.yaml$
 ^_pkgdown\.yml$
+^[^/]+\.rds$
 ^\.ackrc$
 ^\.github$
 ^\.gitlab-ci\.yml$
 ^\.lintr\.R$
-^\.rds$
 ^\.rgignore$
 ^\.travis\.yml$
 ^.*\.Rproj$
