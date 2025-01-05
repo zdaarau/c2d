@@ -6,7 +6,7 @@
 \usage{
 reset_nocodb(
   origin = pal::pkg_config_val("nocodb_origin"),
-  hostname_pg = pal::pkg_config_val("pg_host"),
+  connection = connect(),
   ask = TRUE,
   save_user_mapping = TRUE,
   quiet = TRUE
@@ -15,6 +15,9 @@ reset_nocodb(
 \arguments{
 \item{origin}{\code{\link[base:character]{character(1)}}\cr
 NocoDB server \href{https://developer.mozilla.org/docs/Glossary/Origin}{origin}.}
+
+\item{connection}{\code{\link[RPostgres:PqConnection-class]{PqConnection}}\cr
+Database connection to a PostgreSQL DBMS as returned by \code{\link[=connect]{connect()}}.}
 
 \item{ask}{Whether or not to ask for confirmation before deleting the existing RDB NocoDB base. Only relevant if run \link[=interactive]{interactively}.}
 

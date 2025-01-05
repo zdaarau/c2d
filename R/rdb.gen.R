@@ -2,7 +2,7 @@
 # See `README.md#r-markdown-format` for more information on the literate programming approach used applying the R Markdown format.
 
 # rdb: Download Data from the Referendum Database (RDB), Which Covers Direct Democratic Votes Worldwide
-# Copyright (C) 2024 Centre for Democracy Studies Aarau (ZDA)
+# Copyright (C) 2025 Centre for Democracy Studies Aarau (ZDA)
 # 
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free
 # Software Foundation, either version 3 of the License, or any later version.
@@ -5787,7 +5787,7 @@ reset_rdb <- function(origin_nocodb = pal::pkg_config_val("nocodb_origin"),
     pal::cli_progress_step_quick("Resetting NocoDB base")
   }
   reset_nocodb(origin = origin_nocodb,
-               hostname_pg = hostname_pg,
+               connection = connection,
                ask = FALSE,
                quiet = TRUE)
   
@@ -6134,6 +6134,7 @@ config_nocodb_tbls <- function(origin = pal::pkg_config_val("nocodb_origin"),
 #' Completely re-creates the connection settings and `r pal::wrap_chr(nocodb_base_title, "\x60")` base and adds the RDB team's user accounts on the specified
 #' NocoDB server. `r nocodb_reset_caution`
 #'
+#' @inheritParams pg_tbl_read
 #' @inheritParams nocodb::update_app_settings
 #' @param ask Whether or not to ask for confirmation before deleting the existing RDB NocoDB base. Only relevant if run [interactively][interactive].
 #' @param save_user_mapping Whether or not to add NocoDB's current user data to the `nocodb_users` table via [update_nocodb_users()] before resetting it.
@@ -6144,7 +6145,7 @@ config_nocodb_tbls <- function(origin = pal::pkg_config_val("nocodb_origin"),
 #' @keywords internal
 # nolint start: cyclocomp_linter
 reset_nocodb <- function(origin = pal::pkg_config_val("nocodb_origin"),
-                         hostname_pg = pal::pkg_config_val("pg_host"),
+                         connection = connect(),
                          ask = TRUE,
                          save_user_mapping = TRUE,
                          quiet = TRUE) {
@@ -6178,6 +6179,7 @@ reset_nocodb <- function(origin = pal::pkg_config_val("nocodb_origin"),
     if (save_user_mapping) {
       update_nocodb_users(origin = origin,
                           sweep = FALSE,
+                          connection = connection,
                           disconnect = TRUE)
     }
     
@@ -6214,7 +6216,7 @@ reset_nocodb <- function(origin = pal::pkg_config_val("nocodb_origin"),
                                             user = "nocodb",
                                             password = pg_role_pw("nocodb"),
                                             database = pg_db,
-                                            host = hostname_pg,
+                                            host = DBI::dbGetInfo(connection)$host %||% cli::cli_abort("{.arg connection} must have a {.var host}."),
                                             port = 5432L,
                                             ssl = list(ca = "",
                                                        cert = "",
